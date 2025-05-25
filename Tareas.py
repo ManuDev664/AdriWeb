@@ -30,13 +30,13 @@ def mostrar_tareas(page: ft.Page, volver_a_inicio):
         hora = hora_ft.value
         minuto = minuto_ft.value
         if dropdown.value == "Programar BackUP(Copia de Seguridad)":
-            script_path = os.path.join(os.getcwd(), 'backup_proyectos.sh')
+            script_path = os.path.join(os.getcwd(), 'proyectos.sh')
             job = cron.new(command=f'{script_path}')
             job.minute.on(minuto)
             job.hour.on(hora)
             cron.write()
         elif dropdown.value == "Programar Control para Usuarios":
-            script_path = os.path.join(os.getcwd(), 'control_usuario.sh')
+            script_path = os.path.join(os.getcwd(), 'usuarios.sh')
             job = cron.new(command=f'{script_path} "!Exitoso¡"')
             job.minute.on(minuto)
             job.hour.on(hora)
