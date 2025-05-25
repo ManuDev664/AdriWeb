@@ -39,4 +39,4 @@ def main(page: ft.Page):
 
     mostrar_menu_principal()
 
-ft.app(target=main)
+ft.app(target=main, view=ft.WEB_BROWSER, port=30004)
