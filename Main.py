@@ -1,0 +1,42 @@
+import flet as ft
+from Tareas import mostrar_tareas
+
+def main(page: ft.Page):
+
+    def mostrar_menu_principal(e=None):
+        page.clean()
+        page.title = "ErciTareas by Manuel Arcos"
+        page.bgcolor = "black"
+        page.horizontal_alignment = "center"
+        page.vertical_alignment = "center"
+
+        titulo = ft.Text(
+            "Bienvenido al ErciTareas by Manuel Arcos | 1ºDAM",
+            size=32,
+            weight="bold",
+            color="purple",
+            text_align="center"
+        )
+
+        def iniciar_app(e):
+            mostrar_tareas(page, mostrar_menu_principal)
+
+        boton_iniciar = ft.ElevatedButton(
+            text="Iniciar ErciTareas",
+            bgcolor="red",
+            color="white",
+            on_click=iniciar_app
+        )
+
+        page.add(
+            ft.Column(
+                [titulo, boton_iniciar],
+                alignment=ft.MainAxisAlignment.CENTER,
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                spacing=30
+            )
+        )
+
+    mostrar_menu_principal()
+
+ft.app(target=main)
