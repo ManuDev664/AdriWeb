@@ -1,36 +1,24 @@
 #!/bin/bash
 
-# Verificar si se proporcionó una ruta de destino
-if [ -z "$1" ]; then
-    echo "❌ Error: Debes proporcionar la ruta de destino como parámetro."
-    notify-send "ErciTareas" "❌ Debes indicar la ruta de destino para la copia de seguridad."
+# Verificar que se pasaron dos argumentos
+if [ "$#" -ne 2 ]; then
+    echo "Uso: $0 <ruta_origen> <ruta_destino>"
     exit 1
 fi
 
-# Rutas
-PROYECTOS_DIR="$HOME/proyectos"
-COPIAS_DIR="$HOME/copias"
-DESTINO="$1"
+ORIGEN="$1"
+DESTINO="$2"
 
-# Crear carpetas si no existen
-mkdir -p "$PROYECTOS_DIR"
-mkdir -p "$COPIAS_DIR"
+# Crear la carpeta destino si no existe
+mkdir -p "$DESTINO"
 
-# Nombre del archivo de copia con fecha y hora
-FECHA=$(date +"%Y-%m-%d_%H-%M-%S")
-ARCHIVO_COPIA="backup_proyectos_$FECHA.tar.gz"
-RUTA_COPIA="$DESTINO/$ARCHIVO_COPIA"
+# Ejecutar la copia recursiva
+cp -r "$ORIGEN"/* "$DESTINO"
 
-# Crear la copia comprimida
-tar -czf "$RUTA_COPIA" -C "$PROYECTOS_DIR" .
-
-# Verificar si se creó correctamente
+# Comprobar si la copia fue exitosa
 if [ $? -eq 0 ]; then
-    notify-send "ErciTareas" "✅ Copia de seguridad completada: $ARCHIVO_COPIA"
+    echo "Copia de seguridad realizada con éxito: $ORIGEN -> $DESTINO"
 else
-    notify-send "ErciTareas" "❌ Error durante la copia de seguridad"
-    exit 1
+    echo "Error al realizar la copia de seguridad."
+    exit 2
 fi
-
-# Abrir el explorador de archivos en la carpeta de destino
-xdg-open "$DESTINO" > /dev/null 2>&1 &
