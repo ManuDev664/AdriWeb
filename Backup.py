@@ -27,7 +27,7 @@ def vista_backup(page, volver_selector):
             hora = tiempo_ejecucion.hour
 
             # Ruta absoluta del script
-            script_path = "/home/dam50/Escritorio/proyecto.sh"
+            script_path = "/home/dam50/Escritorio/ErciTareasFlet/proyecto.sh"
 
             # Comando crontab con bash explícito
             cron_line = f"{minuto} {hora} * * * /bin/bash {script_path}\n"
