@@ -8,25 +8,35 @@ def vista_backup(page, volver_selector):
         volver_selector()
 
     def crear_tarea(e):
-        try:
-            # Ejecutar el script con ruta absoluta
-            resultado = subprocess.run(
-                ["/bin/bash", "/home/dam50/Escritorio/backup.sh"],
-                capture_output=True,
-                text=True,
-                check=True
-            )
-            mensaje = f"Backup ejecutado correctamente:\n{resultado.stdout}"
-            page.snack_bar = ft.SnackBar(ft.Text(mensaje, color=ft.colors.YELLOW), open=True)
-        except subprocess.CalledProcessError as err:
-            mensaje = f"Error al ejecutar backup.sh:\n{err.stderr}"
-            page.snack_bar = ft.SnackBar(ft.Text(mensaje, color=ft.colors.RED), open=True)
-        page.update()
+    minutos = tiempo_input.value.strip()
 
-    def crear_tarea(e):
-        page.snack_bar = ft.SnackBar(ft.Text("Tarea de copia de seguridad creada correctamente.", color=ft.colors.YELLOW))
-        page.snack_bar.open = True
+    # Validación básica
+    if not minutos.isdigit():
+        page.snack_bar = ft.SnackBar(ft.Text("Completa correctamente el campo de minutos.", color=ft.Colors.RED), open=True)
         page.update()
+        return
+
+    try:
+        minutos = int(minutos)
+        tiempo_ejecucion = datetime.datetime.now() + datetime.timedelta(minutes=minutos)
+
+        minuto = tiempo_ejecucion.minute
+        hora = tiempo_ejecucion.hour
+
+        # Ruta absoluta del script ya creado
+        script_path = "/home/dam50/Escritorio/proyecto.sh"
+
+        # Comando crontab
+        cron_line = f"{minuto} {hora} * * * {script_path}\n"
+
+        # Añadir al crontab
+        subprocess.run(f"(crontab -l ; echo \"{cron_line}\") | crontab -", shell=True)
+
+        page.snack_bar = ft.SnackBar(ft.Text("Tarea programada con éxito usando proyecto.sh", color=ft.Colors.GREEN), open=True)
+    except Exception as err:
+        page.snack_bar = ft.SnackBar(ft.Text(f"Error: {str(err)}", color=ft.Colors.RED), open=True)
+
+    page.update()
 
     origen_input = ft.TextField(label="Ruta de origen", color=ft.colors.YELLOW)
     destino_input = ft.TextField(label="Ruta de destino", color=ft.colors.YELLOW)
