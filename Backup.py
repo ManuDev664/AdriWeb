@@ -1,4 +1,5 @@
 import flet as ft
+import datetime
 import subprocess
 
 def vista_backup(page, volver_selector):
@@ -8,35 +9,43 @@ def vista_backup(page, volver_selector):
         volver_selector()
 
     def crear_tarea(e):
-    minutos = tiempo_input.value.strip()
+        minutos = tiempo_input.value.strip()
 
-    # Validación básica
-    if not minutos.isdigit():
-        page.snack_bar = ft.SnackBar(ft.Text("Completa correctamente el campo de minutos.", color=ft.Colors.RED), open=True)
+        if not minutos.isdigit():
+            page.snack_bar = ft.SnackBar(
+                ft.Text("Completa correctamente el campo de minutos.", color=ft.Colors.RED),
+                open=True
+            )
+            page.update()
+            return
+
+        try:
+            minutos = int(minutos)
+            tiempo_ejecucion = datetime.datetime.now() + datetime.timedelta(minutes=minutos)
+
+            minuto = tiempo_ejecucion.minute
+            hora = tiempo_ejecucion.hour
+
+            # Ruta absoluta del script
+            script_path = "/home/dam50/Escritorio/proyecto.sh"
+
+            # Comando crontab con bash explícito
+            cron_line = f"{minuto} {hora} * * * /bin/bash {script_path}\n"
+
+            # Programar tarea en crontab sin eliminar otras
+            subprocess.run(f"(crontab -l 2>/dev/null; echo \"{cron_line}\") | crontab -", shell=True)
+
+            page.snack_bar = ft.SnackBar(
+                ft.Text("Tarea programada con éxito usando proyecto.sh", color=ft.Colors.GREEN),
+                open=True
+            )
+        except Exception as err:
+            page.snack_bar = ft.SnackBar(
+                ft.Text(f"Error: {str(err)}", color=ft.Colors.RED),
+                open=True
+            )
+
         page.update()
-        return
-
-    try:
-        minutos = int(minutos)
-        tiempo_ejecucion = datetime.datetime.now() + datetime.timedelta(minutes=minutos)
-
-        minuto = tiempo_ejecucion.minute
-        hora = tiempo_ejecucion.hour
-
-        # Ruta absoluta del script ya creado
-        script_path = "/home/dam50/Escritorio/proyecto.sh"
-
-        # Comando crontab
-        cron_line = f"{minuto} {hora} * * * {script_path}\n"
-
-        # Añadir al crontab
-        subprocess.run(f"(crontab -l ; echo \"{cron_line}\") | crontab -", shell=True)
-
-        page.snack_bar = ft.SnackBar(ft.Text("Tarea programada con éxito usando proyecto.sh", color=ft.Colors.GREEN), open=True)
-    except Exception as err:
-        page.snack_bar = ft.SnackBar(ft.Text(f"Error: {str(err)}", color=ft.Colors.RED), open=True)
-
-    page.update()
 
     origen_input = ft.TextField(label="Ruta de origen", color=ft.colors.YELLOW)
     destino_input = ft.TextField(label="Ruta de destino", color=ft.colors.YELLOW)
