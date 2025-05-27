@@ -1,9 +1,9 @@
 import flet as ft
-from Tareas import mostrar_tareas
+from SeleccionarTarea import mostrar_selector
 
 def main(page: ft.Page):
 
-    def mostrar_menu_principal(e=None):
+    def mostrar_menu_principal():
         page.clean()
         page.title = "ErciTareas by Manuel Arcos"
         page.bgcolor = "black"
@@ -18,14 +18,11 @@ def main(page: ft.Page):
             text_align="center"
         )
 
-        def iniciar_app(e):
-            mostrar_tareas(page, mostrar_menu_principal)
-
         boton_iniciar = ft.ElevatedButton(
             text="Iniciar ErciTareas",
             bgcolor="red",
             color="white",
-            on_click=iniciar_app
+            on_click=lambda e: mostrar_selector(page, mostrar_menu_principal)
         )
 
         page.add(
