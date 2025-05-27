@@ -9,55 +9,46 @@ def vista_backup(page, volver_selector):
         volver_selector()
 
     def crear_tarea(e):
+        origen = origen_input.value.strip()
+        destino = destino_input.value.strip()
         minutos = tiempo_input.value.strip()
 
-        if not minutos.isdigit():
-            page.snack_bar = ft.SnackBar(
-                ft.Text("Completa correctamente el campo de minutos.", color=ft.Colors.RED),
-                open=True
-            )
+        if not origen or not destino or not minutos.isdigit():
+            page.snack_bar = ft.SnackBar(ft.Text("Completa todos los campos correctamente."), open=True)
             page.update()
             return
 
         try:
             minutos = int(minutos)
             tiempo_ejecucion = datetime.datetime.now() + datetime.timedelta(minutes=minutos)
-
             minuto = tiempo_ejecucion.minute
             hora = tiempo_ejecucion.hour
 
-            # Ruta absoluta del script
-            script_path = "/home/dam50/Escritorio/ErciTareasFlet/proyecto.sh"
+            script_path = "/home/dam50/Escritorio/proyecto.sh"
 
-            # Comando crontab con bash explícito
-            cron_line = f"{minuto} {hora} * * * /bin/bash {script_path}\n"
+            # Escapar rutas con espacios
+            origen_esc = origen.replace(" ", "\\ ")
+            destino_esc = destino.replace(" ", "\\ ")
 
-            # Programar tarea en crontab sin eliminar otras
-            subprocess.run(f"(crontab -l 2>/dev/null; echo \"{cron_line}\") | crontab -", shell=True)
+            cron_line = f'{minuto} {hora} * * * /bin/bash {script_path} "{origen_esc}" "{destino_esc}"\n'
+            subprocess.run(f'(crontab -l 2>/dev/null; echo "{cron_line}") | crontab -', shell=True)
 
-            page.snack_bar = ft.SnackBar(
-                ft.Text("Tarea programada con éxito usando proyecto.sh", color=ft.Colors.GREEN),
-                open=True
-            )
+            page.snack_bar = ft.SnackBar(ft.Text("Tarea programada con éxito."), open=True)
         except Exception as err:
-            page.snack_bar = ft.SnackBar(
-                ft.Text(f"Error: {str(err)}", color=ft.Colors.RED),
-                open=True
-            )
+            page.snack_bar = ft.SnackBar(ft.Text(f"Error: {str(err)}"), open=True)
 
         page.update()
 
-    origen_input = ft.TextField(label="Ruta de origen", color=ft.colors.YELLOW)
-    destino_input = ft.TextField(label="Ruta de destino", color=ft.colors.YELLOW)
-    tiempo_input = ft.TextField(label="¿En cuántos minutos iniciar?", color=ft.colors.YELLOW, keyboard_type=ft.KeyboardType.NUMBER)
+    origen_input = ft.TextField(label="Ruta de origen")
+    destino_input = ft.TextField(label="Ruta de destino")
+    tiempo_input = ft.TextField(label="¿En cuántos minutos iniciar?", keyboard_type=ft.KeyboardType.NUMBER)
 
     return ft.Column(
         alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
         controls=[
-            ft.Text("REALIZAR COPIA DE SEGURIDAD", size=30, weight="bold", color=ft.colors.YELLOW),
+            ft.Text("REALIZAR COPIA DE SEGURIDAD", size=30, weight="bold"),
             ft.Container(
-                bgcolor="#2f2f2f",
                 padding=20,
                 border_radius=10,
                 content=ft.Column(
@@ -68,8 +59,8 @@ def vista_backup(page, volver_selector):
                         ft.Row(
                             alignment=ft.MainAxisAlignment.CENTER,
                             controls=[
-                                ft.ElevatedButton("CREAR TAREA", on_click=crear_tarea, color=ft.colors.YELLOW),
-                                ft.ElevatedButton("Volver al selector", on_click=volver, color=ft.colors.YELLOW)
+                                ft.ElevatedButton("CREAR TAREA", on_click=crear_tarea),
+                                ft.ElevatedButton("Volver al selector", on_click=volver)
                             ]
                         )
                     ],
