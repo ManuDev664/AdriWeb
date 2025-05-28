@@ -22,7 +22,7 @@ def mostrar_ercitareas(page: ft.Page, volver_callback):
             destino = ruta_destino.value
             frecuencia = frecuencia_minutos.value
             if origen and destino and frecuencia:
-                subprocess.run(["/bin/bash", "/home/dam50/Escritorio/proyectos.sh", origen, destino, frecuencia])
+                subprocess.run(["/bin/bash", "/home/dam50/Escritorio/ErciTareasFlet/proyectos.sh", origen, destino, frecuencia])
                 page.snack_bar = ft.SnackBar(ft.Text("Copia de Seguridad Realizada"), open=True)
                 page.update()
 
@@ -47,7 +47,7 @@ def mostrar_ercitareas(page: ft.Page, volver_callback):
     def ejecutar_matar(e):
         pid = proceso_pid.value
         if pid:
-            subprocess.run(["/bin/bash", "/home/dam50/Escritorio/usuarios.sh", pid])
+            subprocess.run(["/bin/bash", "/home/dam50/Escritorio/ErciTareasFlet/usuarios.sh", pid])
             proceso_pid.value = ""
             proceso_pid.update()
             actualizar_procesos(lista_procesos_column)
