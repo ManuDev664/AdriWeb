@@ -1,24 +1,20 @@
 #!/bin/bash
 
-# Verificar que se pasaron dos argumentos
-if [ "$#" -ne 2 ]; then
-    echo "Uso: $0 <ruta_origen> <ruta_destino>"
+# Verificar si se pasaron los tres argumentos necesarios
+if [ "$#" -ne 3 ]; then
+    echo "Uso: $0 <ruta_origen> <ruta_destino> <frecuencia_minutos>"
     exit 1
 fi
 
-ORIGEN="$1"
-DESTINO="$2"
+# Asignar argumentos a variables
+RUTA_ORIGEN=$1
+RUTA_DESTINO=$2
+FRECUENCIA=$3
 
-# Crear la carpeta destino si no existe
-mkdir -p "$DESTINO"
+# Crear el comando de copia
+COMANDO="cp -r \"$RUTA_ORIGEN\" \"$RUTA_DESTINO\""
 
-# Ejecutar la copia recursiva
-cp -r "$ORIGEN"/* "$DESTINO"
+# Agregar tarea al crontab del usuario
+(crontab -l 2>/dev/null; echo "*/$FRECUENCIA * * * * $COMANDO") | crontab -
 
-# Comprobar si la copia fue exitosa
-if [ $? -eq 0 ]; then
-    echo "Copia de seguridad realizada con éxito: $ORIGEN -> $DESTINO"
-else
-    echo "Error al realizar la copia de seguridad."
-    exit 2
-fi
+echo "Copia de seguridad programada cada $FRECUENCIA minutos."
