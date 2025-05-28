@@ -1,11 +1,11 @@
 import flet as ft
-from SeleccionarTarea import mostrar_selector
+from ErciTareasView import mostrar_ercitareas
 
 def main(page: ft.Page):
 
     def mostrar_menu_principal():
         page.clean()
-        page.title = "ErciTareas by Manuel Arcos"
+        page.title = "ErciTareas"
         page.bgcolor = "black"
         page.horizontal_alignment = "center"
         page.vertical_alignment = "center"
@@ -22,7 +22,7 @@ def main(page: ft.Page):
             text="Iniciar ErciTareas",
             bgcolor="red",
             color="white",
-            on_click=lambda e: mostrar_selector(page, mostrar_menu_principal)
+            on_click=lambda e: mostrar_ercitareas(page, mostrar_menu_principal)
         )
 
         page.add(
