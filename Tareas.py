@@ -37,9 +37,7 @@ def mostrar_ercitareas(page: ft.Page, volver_callback):
     def actualizar_procesos(lista):
         lista.controls.clear()
         try:
-            procesos = subprocess.run(["ps", "aux"], capture_output=True, text=True)
-            for p in procesos.stdout.splitlines():
-                lista.controls.append(ft.Text(p, size=12))
+            subprocess.run(["ps", "aux"], capture_output=True, text=True)  # Se ejecuta pero no se muestra
         except Exception as ex:
             lista.controls.append(ft.Text(f"Error al listar procesos: {ex}", size=12, color="purple"))
 
@@ -59,12 +57,6 @@ def mostrar_ercitareas(page: ft.Page, volver_callback):
             ft.Text("Matar Procesos", size=20, weight="bold", color="purple"),
             proceso_pid,
             ft.ElevatedButton("Matar proceso", on_click=ejecutar_matar, bgcolor="black", color="white"),
-            ft.Container(
-                lista_procesos_column,
-                border=ft.border.all(1),
-                padding=10,
-                height=300
-            )
         ], scroll="always")
 
     tab_control = ft.Tabs(
