@@ -1,5 +1,5 @@
 import flet as ft
-from ErciTareasView import mostrar_ercitareas
+from Tareas import mostrar_ercitareas
 
 def main(page: ft.Page):
 
